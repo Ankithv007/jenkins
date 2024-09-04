@@ -3,45 +3,10 @@ pipeline {
     docker { image 'node:16-alpine' }
   }
   stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/Ankithv007/jenkins'
-      }
-    }
-    stage('Install Dependencies') {
-      steps {
-        // Change the directory path to match where package.json is located
-        sh 'npm install'
-      }
-    }
-    stage('Build') {
-      steps {
-        // Change the directory path to match where your build commands should run
-        sh 'npm run build'
-      }
-    }
     stage('Test') {
       steps {
-        // Change the directory path to match where your test commands should run
-        sh 'npm test'
+        sh 'node --version'
       }
-    }
-    stage('Deploy') {
-      steps {
-        // Change the directory path to match where your deploy commands should run
-        sh 'npm run deploy'
-      }
-    }
-  }
-  post {
-    always {
-      echo 'Pipeline completed.'
-    }
-    success {
-      echo 'Pipeline executed successfully.'
-    }
-    failure {
-      echo 'Pipeline failed.'
     }
   }
 }
