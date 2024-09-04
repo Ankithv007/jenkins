@@ -5,27 +5,30 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        // Assuming SCM is already configured
-        checkout scm
+        git branch: 'main', url: 'https://github.com/Ankithv007/jenkins'
       }
     }
     stage('Install Dependencies') {
       steps {
+        // Change the directory path to match where package.json is located
         sh 'npm install'
       }
     }
     stage('Build') {
       steps {
+        // Change the directory path to match where your build commands should run
         sh 'npm run build'
       }
     }
     stage('Test') {
       steps {
+        // Change the directory path to match where your test commands should run
         sh 'npm test'
       }
     }
     stage('Deploy') {
       steps {
+        // Change the directory path to match where your deploy commands should run
         sh 'npm run deploy'
       }
     }
