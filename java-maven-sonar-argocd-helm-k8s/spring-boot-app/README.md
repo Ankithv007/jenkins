@@ -82,3 +82,30 @@ cd sonarqube-9.4.0.54424/bin/linux-x86-64/
 
 Hurray !! Now you can access the `SonarQube Server` on `http://<ip-address>:9000` 
 
+####  (other part)
+### TO insatl minikube in my local laptop or for the operate with argocd (Configuring Minikube) after all the below steps
+`
+minikube start --driver=docker --memory=4096
+`
+first create user in local then add the user to the Docker 
+this for add user in linux 
+`
+sudo adduser jenkin
+`
+Once the user jenkin is created, you can add them to the Docker group:(switch into created user (su jenkins) )
+`
+sudo usermod -aG docker jenkin
+`
+Confirm that jenkin is now part of the Docker group:
+`
+groups jenkin
+`
+Make sure Docker is functioning correctly for the user:
+`
+docker run hello-world
+`
+### diffrence between adduser and useradd
+adduser: Automatically creates a home directory and sets up user configurations with a guided, interactive process.
+
+useradd: Allows for more granular control without automatically creating a home directory unless explicitly instructed with the -m option.
+[Both commands ultimately achieve the same goal, but adduser is generally preferred for its ease of use in typical scenarios]
