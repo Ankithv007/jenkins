@@ -86,7 +86,8 @@ Hurray !! Now you can access the `SonarQube Server` on `http://<ip-address>:9000
 ### TO insatl minikube in my local laptop or for the operate with argocd (Configuring Minikube) after all the below steps
 
 ```
-minikube start --driver=docker --memory=4096
+minikube start --driver=docker
+
 ```
 #### first create user in local then add the user to the Docker 
 ##### this for add user in linux 
