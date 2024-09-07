@@ -94,14 +94,17 @@ minikube start --driver=docker --memory=4096
 sudo adduser jenkin
 `
 ##### Once the user jenkin is created, you can add them to the Docker group:(switch into created user (su jenkins) )
+
 `
 sudo usermod -aG docker jenkin
 `
 ##### Confirm that jenkin is now part of the Docker group:
+
 `
 groups jenkin
 `
-#### Make sure Docker is functioning correctly for the user:
+#### Make sure Docker is functioning correctly for the user:(after su to jenkins)
+
 `
 docker run hello-world
 `
