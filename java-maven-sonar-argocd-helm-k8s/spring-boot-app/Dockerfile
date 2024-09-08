@@ -5,11 +5,11 @@ FROM maven:3.8.4-openjdk-11-slim AS builder
 USER root
 RUN apt-get update && apt-get install -y docker.io
 
+# Set the working directory for the application
+WORKDIR /opt/app
+
 # ARG for the artifact path
 ARG artifact=target/spring-boot-web.jar
-
-# Set working directory for the application
-WORKDIR /opt/app
 
 # Copy the application JAR file
 COPY ${artifact} app.jar
