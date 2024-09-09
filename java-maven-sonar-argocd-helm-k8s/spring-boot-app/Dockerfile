@@ -1,14 +1,11 @@
-# For Java 11, use this
+# Use the base image with Java 11
 FROM adoptopenjdk/openjdk11:alpine-jre
 
-# Define the build argument for the JAR file
-ARG JAR_FILE=target/spring-boot-web.jar
-
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /opt/app
 
-# Copy the JAR file into the container
-COPY ${JAR_FILE} app.jar
+# Copy the JAR file from the build context to the container
+COPY target/spring-boot-web.jar app.jar
 
-# Specify the command to run the JAR file
+# Define the command to run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
