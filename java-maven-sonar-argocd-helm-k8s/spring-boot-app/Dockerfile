@@ -1,24 +1,21 @@
-# Use Maven official image to build the project
-FROM maven:3.8.4-openjdk-11 AS build
+#For Java 8, try this 
+FROM openjdk:8-jdk-alpine
 
-# Set working directory inside the container
-WORKDIR /app
+#For Java 11, try this 
+FROM adoptopenjdk/openjdk11:alpine-jre
 
-# Copy the Maven project files to the working directory
-COPY . /app
+#Refer to Maven build -> finalName
+ARG JAR FILE-target/spring-boot-web.jar
 
-# Build the Maven project (you can specify additional arguments here)
-RUN mvn clean package
+#cd /opt/app 
+WORKDIR /opt/app
 
-# Final image with only the built application
-FROM openjdk:11-jre-slim
+#cp target/spring-boot-web.jar /opt/app/app.jar 
+COPY ${JAR FILE} app.jar
 
-# Set working directory for the application
-WORKDIR /app
+#java -jar /opt/app/app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/*.jar /app/app.jar
-
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
-
+ sudo docker run -p 8080:8080 -t docker-spring-boot:1.0
+ sudo docker run -p 80:8080-t docker-spring-boot:1.0 
+ sudo docker run -p 443:8443 -t docker-spring-boot:1.0
