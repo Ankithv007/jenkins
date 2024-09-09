@@ -1,18 +1,24 @@
-# Use a base image that includes OpenJDK 11 and Maven
-FROM maven:3.8.4-openjdk-11-slim AS builder
+# Use Maven official image to build the project
+FROM maven:3.8.4-openjdk-11 AS build
 
-# Install Docker in the container to enable Docker commands
-USER root
-RUN apt-get update && apt-get install -y docker.io
+# Set working directory inside the container
+WORKDIR /app
 
-# Set the working directory for the application
-WORKDIR /opt/app
+# Copy the Maven project files to the working directory
+COPY . /app
 
-# ARG for the artifact path
-ARG artifact=target/spring-boot-web.jar
+# Build the Maven project (you can specify additional arguments here)
+RUN mvn clean package
 
-# Copy the application JAR file
-COPY ${artifact} app.jar
+# Final image with only the built application
+FROM openjdk:11-jre-slim
 
-# Set the ENTRYPOINT to run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Set working directory for the application
+WORKDIR /app
+
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/*.jar /app/app.jar
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
