@@ -1,6 +1,6 @@
 version : "3.3"
 services :
   web :
-     image: "ankithbv007/notes-app:latest"
+     image: "ankithbv007/node-app-test-new:latest"
      ports :
          - "8000:8000"
