@@ -1,38 +1,49 @@
 pipeline {
-    agent { label "ankith"}
+    agent { label 'ankith' }
     
     stages {
         
-        stage("code"){
-            steps{
-                git url: "https://github.com/Ankithv007/django-notes-app", branch: "main"
-                echo 'this for code clone'
+        stage('Clone Code') {
+            steps {
+                // Cloning the repository
+                git url: 'https://github.com/Ankithv007/jenkins.git', branch: 'main'
+                echo 'Code cloned from repository'
             }
         }
-        stage("build"){
-            steps{
-                sh "docker build -t node-app-test-new ."
-                echo 'this is for code build'
+        
+        stage('Build') {
+            steps {
+                dir('jen-proj') { // Navigate to the project directory where Dockerfile is located
+                    // Building the Docker image
+                    sh 'docker build -t node-app-test-new .'
+                }
+                echo 'Code built into Docker image'
             }
         }
-        stage("push"){
-            steps{
+        
+        stage('Push') {
+            steps {
                 withCredentials([usernamePassword(
-                    credentialsId:"dockerHubCred",
-                    passwordVariable:"dockerHubPass",
-                    usernameVariable:"dockerHubUser")]){
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker tag node-app-test-new:latest ${env.dockerHubUser}/node-app-test-new:latest"
-                sh "docker push ${env.dockerHubUser}/node-app-test-new:latest"
-                echo 'image push ho gaya'
+                    credentialsId: 'dockerHubCred',
+                    passwordVariable: 'dockerHubPass',
+                    usernameVariable: 'dockerHubUser'
+                )]) {
+                    // Logging in to Docker Hub and pushing the image
+                    sh 'docker login -u ${dockerHubUser} -p ${dockerHubPass}'
+                    sh 'docker tag node-app-test-new:latest ${dockerHubUser}/node-app-test-new:latest'
+                    sh 'docker push ${dockerHubUser}/node-app-test-new:latest'
+                    echo 'Docker image pushed to Docker Hub'
                 }
             }
         }
-        stage("deploy"){
-            steps{
-               
-                echo 'this is for depoly with compose'
-                sh "docker compose up -d"
+        
+        stage('Deploy') {
+            steps {
+                dir('jen-proj') { // Navigate to the project directory containing docker-compose.yml
+                     echo 'this is for depoly with compose'
+                       sh "docker compose up -d"
+
+                }
             }
         }
     }
