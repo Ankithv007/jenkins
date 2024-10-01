@@ -1,0 +1,24 @@
+pipeline {
+  agent {
+    docker { image 'node:16-alpine' }
+  }
+  stages {
+    stage('Test') {
+      steps {
+        script {
+          // Print the Node.js version
+          sh 'node --version'
+          
+          // Print the npm version
+          sh 'npm --version'
+          
+          // Print the working directory to ensure it's correct
+          sh 'pwd'
+          
+          // List files in the directory to check if package.json exists
+          sh 'ls -la'
+        }
+      }
+    }
+  }
+}

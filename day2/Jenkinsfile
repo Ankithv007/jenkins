@@ -1,0 +1,47 @@
+pipeline {
+  agent none
+  stages {
+    stage('Back-end') {
+      agent {
+        docker { image 'maven:3.8.1-adoptopenjdk-11' }
+      }
+      steps {
+        sh 'mvn --version'
+        sh '''
+          echo "public class HelloWorld {
+            public static void main(String[] args) {
+              System.out.println(\\"Hello, World!\\");
+            }
+          }" > HelloWorld.java
+          javac HelloWorld.java
+          java HelloWorld
+        '''
+      }
+    }
+    stage('Front-end') {
+      agent {
+        docker { image 'node:16-alpine' }
+      }
+      steps {
+        sh 'npm --version'
+        // Create a minimal package.json
+        sh '''
+          echo '{
+            "name": "sample-app",
+            "version": "1.0.0",
+            "main": "app.js",
+            "scripts": {
+              "start": "node app.js"
+            }
+          }' > package.json
+        '''
+        // Create a simple Node.js script, install dependencies, and run the application
+        sh '''
+          echo "console.log('Hello, World!');" > app.js
+          npm install
+          node app.js
+        '''
+      }
+    }
+  }
+}
