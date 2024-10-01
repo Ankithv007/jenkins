@@ -1,43 +1,52 @@
 @Library("shared") _ 
 pipeline {
-    agent { label "ankith"}
+    agent { label "ankith" }
     
     stages {
         
-         stage("Hello"){
-            steps{
-                script{
+        stage("Hello") {
+            steps {
+                script {
                     hello()
                 }
             }
         }
-        stage("Code"){
-            steps{
-               script{
-                clone("https://github.com/Ankithv007/jenkins/tree/main/jen-proj","main")
-               }
-                
-            }
-        }
-        stage("Build"){
-            steps{
-                script{
-                docker_build("node-app-test-new","latest","ankithbv007")
+
+        stage("Code") {
+            steps {
+                script {
+                    
+                    clone("https://github.com/Ankithv007/jenkins.git", "main") 
                 }
             }
         }
-       stage("Push to DockerHub"){
-            steps{
-                script{
-                    docker_push("node-app-test-new","latest","ankithbv007")
+
+        stage("Build") {
+            steps {
+                dir('jen-proj') { 
+                    script {
+                        docker_build("node-app-test-new", "latest", "ankithbv007")
+                    }
                 }
             }
         }
-        stage("deploy"){
-            steps{
-               
-                echo 'this is for depoly with compose'
-                sh "docker compose up -d"
+
+        stage("Push to DockerHub") {
+            steps {
+                dir('jen-proj') { 
+                    script {
+                        docker_push("node-app-test-new", "latest", "ankithbv007") 
+                    }
+                }
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                dir('jen-proj') { 
+                    echo 'Deploying with Docker Compose'
+                    sh "docker compose up -d" 
+                }
             }
         }
     }
