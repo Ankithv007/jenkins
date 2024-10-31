@@ -1,40 +1,55 @@
 ### first one direct (direct with project name)
 ```
 pipeline {
-    agent { label "ankith"}
-    
+    agent { label 'ankith' } //chnage it accordingly
+
     stages {
-        
-        stage("code"){
-            steps{
-                git url: "https://github.com/Ankithv007/django-notes-app", branch: "main"
-                echo 'this for code clone'
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', 
+                    url: 'https://github.com/Ankithv007/jenkins.git',
+                    changelog: false,
+                    poll: false
             }
         }
-        stage("build"){
-            steps{
-                sh "docker build -t node-app-test-new ."
-                echo 'this is for code build'
-            }
-        }
-        stage("push"){
-            steps{
-                withCredentials([usernamePassword(
-                    credentialsId:"dockerHubCred",
-                    passwordVariable:"dockerHubPass",
-                    usernameVariable:"dockerHubUser")]){
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker tag node-app-test-new:latest ${env.dockerHubUser}/node-app-test-new:latest"
-                sh "docker push ${env.dockerHubUser}/node-app-test-new:latest"
-                echo 'image push ho gaya'
+
+        stage('Navigate to Project') {
+            steps {
+                dir('jen-proj') {
+                    script {
+                        echo 'Inside jen-proj folder'
+                    }
                 }
             }
         }
-        stage("deploy"){
-            steps{
-               
-                echo 'this is for depoly with compose'
-                sh "docker compose up -d"
+
+        stage("build") {
+            steps {
+                dir('jen-proj') {
+                    sh "docker build -t node-app-test-new ."
+                }
+                echo 'this is for code build'
+            }
+        }
+
+        stage("push") {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId:"dockerHubCred",
+                    passwordVariable:"dockerHubPass",
+                    usernameVariable:"dockerHubUser")]) {
+                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                        sh "docker tag node-app-test-new:latest ${env.dockerHubUser}/node-app-test-new:latest"
+                        sh "docker push ${env.dockerHubUser}/node-app-test-new:latest"
+                        echo 'image push ho gaya'
+                }
+            }
+        }
+
+        stage("deploy") {
+            steps {
+                echo 'this is for deploy with compose'
+                sh "docker compose -f jen-proj/docker-compose.yml up -d"
             }
         }
     }
